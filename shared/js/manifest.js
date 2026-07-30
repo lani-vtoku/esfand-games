@@ -3,6 +3,17 @@
 // say exactly what is wrong instead of showing a blank page.
 
 /**
+ * Append a cache-busting query so hosted deploys (e.g. GitHub Pages, which
+ * serves max-age=600) never show stale art after an update. Dynamically
+ * loaded images bypass even hard-refresh cache invalidation, so this is the
+ * only reliable fix. Harmless locally.
+ * @param {string} url
+ */
+export function bust(url) {
+  return url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+}
+
+/**
  * Fetch and parse a manifest.json. On failure shows a full-screen error
  * naming the file and the problem, and returns a promise that never resolves
  * (the game simply doesn't start).
@@ -12,7 +23,7 @@
 export async function loadManifest(url) {
   let res;
   try {
-    res = await fetch(url);
+    res = await fetch(bust(url));
   } catch {
     showError(`Could not reach the server while loading <code>${url}</code>.`,
       'Is start-server.bat running?');
@@ -46,7 +57,7 @@ export function loadImage(src) {
     const img = new Image();
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
-    img.src = src;
+    img.src = bust(src);
   });
 }
 

@@ -3,7 +3,7 @@
 
 import { MapWidget } from './map.js';
 import { scoreGuess, distance, toLeagues, rankTitle, pickRound } from './scoring.js';
-import { loadManifest, showError } from '../../shared/js/manifest.js';
+import { loadManifest, showError, bust } from '../../shared/js/manifest.js';
 import { guardInputs, fullscreenOnFirstInteraction, watchIdle, adminGesture, buildAdminOverlay } from '../../shared/js/kiosk.js';
 import { countUp } from '../../shared/js/ui.js';
 
@@ -46,7 +46,7 @@ const revealBanner = el('reveal-banner');
 const attract = el('attract');
 const totalScreen = el('total');
 
-el('map-thumb-img').src = 'assets/' + manifest.map.image;
+el('map-thumb-img').src = bust('assets/' + manifest.map.image);
 const map = new MapWidget(el('map-holder'), manifest.map);
 map.onGuessMoved = () => { btnLock.disabled = false; btnLock.style.opacity = '1'; };
 
@@ -70,7 +70,7 @@ function startGame() {
 function startRound() {
   phase = 'guess';
   const loc = round[roundIdx];
-  screenshot.src = 'assets/' + loc.image;
+  screenshot.src = bust('assets/' + loc.image);
   roundLabel.textContent = `Round ${roundIdx + 1} / ${GAME.rounds}`;
   scoreLabel.textContent = `Score: ${totalScore.toLocaleString()}`;
   map.reset();

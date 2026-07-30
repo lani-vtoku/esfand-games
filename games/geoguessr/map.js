@@ -1,3 +1,5 @@
+import { bust } from '../../shared/js/manifest.js';
+
 // Map widget for WoW GeoGuessr: renders the world map in a container,
 // converts clicks/drags to natural-pixel map coords, shows pins and the
 // reveal line. All coordinates exposed to callers are in the map image's
@@ -15,7 +17,7 @@ export class MapWidget {
 
     container.classList.add('mapw');
     this.img = document.createElement('img');
-    this.img.src = 'assets/' + mapCfg.image;
+    this.img.src = bust('assets/' + mapCfg.image);
     this.img.className = 'mapw-img';
     this.img.draggable = false;
 
