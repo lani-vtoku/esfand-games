@@ -1,0 +1,16 @@
+{
+  "games": [
+    {
+      "id": "onyxia-run",
+      "name": "Onyxia Run",
+      "path": "games/onyxia-run/",
+      "description": "One button. Dodge the pillars. Beat the top score, win the prize."
+    },
+    {
+      "id": "geoguessr",
+      "name": "WoW GeoGuessr",
+      "path": "games/geoguessr/",
+      "description": "Guess the zone from a screenshot. 5 rounds, 5000 points max."
+    }
+  ]
+}

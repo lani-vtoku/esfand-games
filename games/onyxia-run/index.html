@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Onyxia Run</title>
+<link rel="stylesheet" href="../../shared/css/theme.css">
+<style>
+  #game { display: block; touch-action: none; }
+  #name-overlay { gap: 1.2rem; }
+</style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="name-overlay" class="overlay hidden">
+    <p id="name-rank" class="wow-title" style="font-size:2.2rem"></p>
+    <div id="name-container" style="display:flex;flex-direction:column;align-items:center;gap:1.2rem"></div>
+  </div>
+  <script type="module" src="game.js"></script>
+</body>
+</html>

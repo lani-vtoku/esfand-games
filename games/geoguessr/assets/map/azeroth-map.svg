@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1536" viewBox="0 0 2048 1536">
+  <rect width="2048" height="1536" fill="#123c55"/>
+  <!-- Kalimdor (west) -->
+  <path d="M300 200 Q470 120 560 260 Q640 380 600 520 Q660 640 590 780
+           Q640 920 560 1060 Q520 1220 400 1280 Q260 1330 220 1180
+           Q140 1080 190 920 Q140 760 200 620 Q170 440 240 320 Z"
+        fill="#3e6b2f" stroke="#2b4c20" stroke-width="10"/>
+  <!-- Eastern Kingdoms (east) -->
+  <path d="M1420 140 Q1580 100 1650 240 Q1740 340 1690 470 Q1780 560 1730 700
+           Q1800 830 1720 960 Q1760 1100 1650 1200 Q1560 1320 1450 1250
+           Q1360 1300 1310 1170 Q1250 1060 1310 940 Q1260 820 1320 700
+           Q1280 560 1350 440 Q1330 280 1420 140 Z"
+        fill="#4a6b33" stroke="#334b24" stroke-width="10"/>
+  <text x="420" y="700" fill="#d8ecc0" font-family="Georgia" font-size="72" text-anchor="middle" opacity="0.85">KALIMDOR</text>
+  <text x="1520" y="700" fill="#d8ecc0" font-family="Georgia" font-size="66" text-anchor="middle" opacity="0.85">EASTERN KINGDOMS</text>
+  <text x="1024" y="1480" fill="#9fc4d8" font-family="Georgia" font-size="40" text-anchor="middle" opacity="0.6">PLACEHOLDER MAP — replace with real Azeroth map art (keep 2048×1536 or update manifest)</text>
+</svg>

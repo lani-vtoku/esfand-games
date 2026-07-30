@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="spire" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f0f22"/><stop offset="1" stop-color="#160a18"/>
+    </linearGradient>
+  </defs>
+  <!-- jagged near spires, transparent sky -->
+  <path d="M0 720 L40 560 L90 640 L150 470 L210 660 L260 540 L330 700 L380 520 L450 680 L520 560 L600 720 Z" fill="url(#spire)"/>
+  <path d="M680 720 L740 540 L800 660 L860 480 L930 680 L990 560 L1060 700 L1120 500 L1200 660 L1250 580 L1280 720 Z" fill="url(#spire)"/>
+  <path d="M148 480 q4 40 -2 70 M858 492 q4 40 -2 66" stroke="#ff7a2b" stroke-width="4" fill="none" opacity=".7"/>
+  <!-- drifting embers -->
+  <circle cx="300" cy="420" r="3" fill="#ffb35e" opacity=".8"/>
+  <circle cx="720" cy="360" r="2.4" fill="#ffb35e" opacity=".7"/>
+  <circle cx="1080" cy="440" r="3.2" fill="#ff9a3e" opacity=".8"/>
+  <circle cx="520" cy="300" r="2" fill="#ffd9a0" opacity=".6"/>
+</svg>

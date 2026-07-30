@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>WoW GeoGuessr</title>
+<link rel="stylesheet" href="../../shared/css/theme.css">
+<link rel="stylesheet" href="map.css">
+<style>
+  #screenshot {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; background: #000;
+  }
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 3rem;
+    padding: .8rem; font-size: 1.6rem;
+    background: linear-gradient(rgba(0,0,0,.75), transparent);
+    text-shadow: 0 2px 4px #000;
+    pointer-events: none;
+  }
+  /* Corner thumbnail that invites expanding the map */
+  #map-thumb {
+    position: fixed; right: 24px; bottom: 24px; width: 300px; height: 225px;
+    border: 3px solid var(--gold); border-radius: 12px; overflow: hidden;
+    cursor: pointer; background: #0a2231;
+    box-shadow: 0 8px 30px rgba(0,0,0,.7);
+    transition: transform .15s ease;
+  }
+  #map-thumb:hover { transform: scale(1.05); }
+  #map-thumb img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+  #map-thumb .hint {
+    position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
+    padding: .4rem; background: rgba(0,0,0,.65); font-size: 1.1rem; color: var(--gold);
+  }
+  /* Expanded map panel */
+  #map-panel {
+    position: fixed; inset: 0; z-index: 40;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(5, 8, 12, .88);
+  }
+  #map-holder {
+    width: min(74vw, 132vh); height: min(55.5vw, 74vh);
+    border: 3px solid var(--gold); border-radius: 12px; background: #0a2231;
+  }
+  #map-actions { display: flex; gap: 1.2rem; margin-top: 1.2rem; align-items: center; }
+  #reveal-banner {
+    display: flex; flex-direction: column; align-items: center; gap: .3rem;
+    margin-bottom: 1rem; text-align: center;
+  }
+  #reveal-zone { font-size: 3rem; }
+  #reveal-detail { font-size: 1.5rem; color: var(--ink-dim); }
+  #reveal-points { font-size: 2.6rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .idle-warn {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    z-index: 90; font-size: 1.6rem; color: #ffd9d0; text-shadow: 0 2px 4px #000;
+  }
+</style>
+</head>
+<body>
+  <img id="screenshot" alt="">
+  <div id="topbar">
+    <span id="round-label"></span>
+    <span id="score-label"></span>
+  </div>
+
+  <div id="map-thumb" class="hidden">
+    <img id="map-thumb-img" alt="Map">
+    <div class="hint">TAP TO GUESS</div>
+  </div>
+
+  <div id="map-panel" class="hidden">
+    <div id="reveal-banner" class="hidden">
+      <div id="reveal-zone" class="wow-title"></div>
+      <div id="reveal-detail"></div>
+      <div id="reveal-points"></div>
+    </div>
+    <div id="map-holder"></div>
+    <div id="map-actions">
+      <button id="btn-close-map" class="btn btn-ghost">Back to photo</button>
+      <button id="btn-lock" class="btn btn-huge">Lock In Guess</button>
+      <button id="btn-next" class="btn btn-huge hidden">Next</button>
+    </div>
+  </div>
+
+  <div id="attract" class="overlay">
+    <h1 class="wow-title" style="font-size:clamp(3rem,8vw,6rem)">WoW GeoGuessr</h1>
+    <p style="font-size:1.6rem;max-width:640px;text-align:center">
+      Where in Azeroth is this? 5 screenshots, 5000 points.
+    </p>
+    <button id="btn-start" class="btn btn-huge attract-pulse">Touch to Play</button>
+  </div>
+
+  <div id="total" class="overlay hidden">
+    <h1 class="wow-title" style="font-size:3.4rem">Journey Complete</h1>
+    <div id="total-score" class="wow-title" style="font-size:5rem"></div>
+    <div id="total-rank" style="font-size:2rem"></div>
+    <button id="btn-again" class="btn btn-huge">Play Again</button>
+  </div>
+
+  <div id="idle-warn" class="idle-warn hidden"></div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>

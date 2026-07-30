@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GeoGuessr — Map Calibration</title>
+<link rel="stylesheet" href="../../shared/css/theme.css">
+<link rel="stylesheet" href="map.css">
+<style>
+  html, body { overflow: auto; user-select: text; }
+  body { display: flex; height: 100vh; }
+  #sidebar {
+    width: 360px; min-width: 360px; overflow-y: auto;
+    background: var(--panel); border-right: 3px solid var(--gold-dark);
+    padding: 1rem; display: flex; flex-direction: column; gap: .6rem;
+  }
+  #sidebar h1 { font-size: 1.4rem; }
+  #sidebar p.help { font-size: .9rem; color: var(--ink-dim); }
+  .loc {
+    padding: .6rem .8rem; border-radius: 8px; cursor: pointer;
+    background: var(--panel-light); border: 2px solid transparent;
+    display: flex; justify-content: space-between; gap: .5rem; align-items: center;
+  }
+  .loc:hover { border-color: var(--ink-dim); }
+  .loc.selected { border-color: var(--gold); }
+  .loc .status { font-size: .8rem; }
+  .loc.uncal .status { color: #ff8a7a; font-weight: bold; }
+  .loc.cal .status { color: var(--green); }
+  #main { flex: 1; display: flex; flex-direction: column; padding: 1rem; gap: 1rem; overflow: hidden; }
+  #ref {
+    height: 220px; display: flex; gap: 1rem; align-items: center;
+  }
+  #ref img { height: 100%; border-radius: 8px; border: 2px solid var(--gold-dark); }
+  #ref .info { font-size: 1.1rem; }
+  #map-holder { flex: 1; border: 3px solid var(--gold-dark); border-radius: 12px; background: #0a2231; }
+  #actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  #coords { font-family: monospace; font-size: 1.1rem; color: var(--gold); }
+</style>
+</head>
+<body>
+  <div id="sidebar">
+    <h1 class="wow-title">Calibration</h1>
+    <p class="help">
+      Select a location, then click its spot on the map. Arrow keys nudge.
+      The dashed ring shows the full-points (1000) radius.
+      When done, click <b>Download manifest.json</b> and replace
+      <code>games/geoguessr/assets/manifest.json</code> with the downloaded file.
+    </p>
+    <div id="loc-list"></div>
+  </div>
+  <div id="main">
+    <div id="ref">
+      <img id="ref-img" alt="" style="display:none">
+      <div class="info">
+        <div id="ref-name" style="font-size:1.5rem" class="wow-title"></div>
+        <div id="coords"></div>
+        <div id="progress" style="color:var(--ink-dim)"></div>
+      </div>
+    </div>
+    <div id="map-holder"></div>
+    <div id="actions">
+      <button id="btn-download" class="btn">Download manifest.json</button>
+      <a class="btn btn-ghost" href="index.html" style="text-decoration:none">Back to game</a>
+    </div>
+  </div>
+  <script type="module" src="calibrate.js"></script>
+</body>
+</html>

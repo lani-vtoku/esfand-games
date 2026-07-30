@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esfand Games — Hub</title>
+<link rel="stylesheet" href="shared/css/theme.css">
+<style>
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 2rem; }
+  .hub-title { font-size: clamp(2rem, 6vw, 4rem); }
+  .hub-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; max-width: 1000px; }
+  .hub-card {
+    display: block; width: 320px; padding: 1.5rem; text-decoration: none;
+    background: var(--panel); border: 3px solid var(--gold); border-radius: 12px;
+    color: var(--ink); transition: transform .12s ease;
+  }
+  .hub-card:hover { transform: scale(1.04); }
+  .hub-card h2 { color: var(--gold); margin-bottom: .5rem; }
+  .hub-tools { opacity: .7; font-size: .9rem; }
+  .hub-tools a { color: var(--gold); }
+</style>
+</head>
+<body>
+  <h1 class="hub-title wow-title">Esfand Games</h1>
+  <div class="hub-grid" id="grid"></div>
+  <p class="hub-tools">
+    Tools: <a href="games/geoguessr/calibrate.html">GeoGuessr map calibration</a>
+  </p>
+  <script type="module">
+    const { games } = await (await fetch('games.json')).json();
+    document.getElementById('grid').innerHTML = games.map(g => `
+      <a class="hub-card" href="${g.path}">
+        <h2>${g.name}</h2>
+        <p>${g.description}</p>
+      </a>`).join('');
+  </script>
+</body>
+</html>

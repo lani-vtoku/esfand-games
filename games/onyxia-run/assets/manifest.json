@@ -1,0 +1,30 @@
+{
+  "player": {
+    "frames": ["sprites/drake-1.svg", "sprites/drake-2.svg"],
+    "frameMs": 140,
+    "hitboxRadius": 22
+  },
+  "obstacles": {
+    "top": "sprites/pillar-top.svg",
+    "bottom": "sprites/pillar-bottom.svg",
+    "width": 110
+  },
+  "background": {
+    "layers": [
+      { "image": "sprites/bg-far.jpg", "speedFactor": 0.15 },
+      { "image": "sprites/bg-near.svg", "speedFactor": 0.4 }
+    ]
+  },
+  "floor": { "image": "sprites/lava.svg", "height": 90 },
+  "text": {
+    "title": "ONYXIA RUN",
+    "prizeLine": "Top score at close wins the prize!",
+    "deathLines": [
+      "DEEP BREATH...",
+      "Whelps! Handle it!",
+      "MORE DOTS! MORE DOTS!",
+      "That's a 50 DKP MINUS!",
+      "Many whelps, now handle it!"
+    ]
+  }
+}
