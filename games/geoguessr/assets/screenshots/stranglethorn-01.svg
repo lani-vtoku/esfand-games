@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#5e9e6f"/>
+  <rect y="560" width="1600" height="340" fill="#2c5c38"/>
+  <path d="M250 560 q40 -240 90 0 z" fill="#1f4228"/><path d="M1250 560 q50 -280 100 0 z" fill="#1f4228"/>
+  <text x="800" y="120" fill="#ffffff" opacity="0.85" font-family="Georgia" font-size="64" text-anchor="middle">Stranglethorn Vale</text>
+  <text x="800" y="190" fill="#ffffff" opacity="0.6" font-family="Georgia" font-size="34" text-anchor="middle">placeholder screenshot — replace with a real in-game capture</text>
+</svg>

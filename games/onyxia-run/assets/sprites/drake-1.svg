@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
   <defs>
     <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#c8402e"/><stop offset="1" stop-color="#8a2318"/>
+      <stop offset="0" stop-color="#3f3540"/><stop offset="1" stop-color="#191218"/>
     </linearGradient>
     <linearGradient id="wingg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#e06a3a"/><stop offset="1" stop-color="#9c3a20"/>
+      <stop offset="0" stop-color="#4a3550"/><stop offset="1" stop-color="#241a2b"/>
     </linearGradient>
   </defs>
   <!-- tail -->
   <path d="M38 74 Q16 78 6 70 Q14 82 4 88 Q20 90 30 82 Q36 78 40 78 Z" fill="url(#body)"/>
-  <path d="M10 71 l-8 -4 6 10 z" fill="#e8d9a0"/>
+  <path d="M10 71 l-8 -4 6 10 z" fill="#d8c9a8"/>
   
   <path d="M64 60 Q58 32 54 8 Q47 12 40 6 Q42 16 34 12 Q34 22 24 20 Q34 34 30 46 Q44 40 50 50 Q58 52 64 60 Z"
         fill="url(#wingg)" opacity="0"/>
@@ -23,24 +23,24 @@
            Q26 44 40 52
            Q54 58 64 60 Z" fill="url(#wingg)"/>
   <path d="M64 60 Q58 28 54 6 M64 60 Q50 30 40 18 M64 60 Q42 36 27 30"
-        stroke="#7a2a16" stroke-width="2.4" fill="none" opacity=".7"/>
+        stroke="#140e18" stroke-width="2.4" fill="none" opacity=".7"/>
   <!-- body -->
   <ellipse cx="62" cy="74" rx="28" ry="17" fill="url(#body)"/>
-  <ellipse cx="66" cy="82" rx="20" ry="9" fill="#d9915e"/>
+  <ellipse cx="66" cy="82" rx="20" ry="9" fill="#8a7a66"/>
   <!-- rear leg tucked -->
-  <path d="M52 86 q-6 8 2 12 q8 2 10 -4 q-6 -2 -12 -8 z" fill="#7a1f14"/>
+  <path d="M52 86 q-6 8 2 12 q8 2 10 -4 q-6 -2 -12 -8 z" fill="#221a26"/>
   <!-- neck + head -->
   <path d="M78 66 Q90 60 93 46 L105 48 Q102 64 92 72 Q86 76 79 73 Z" fill="url(#body)"/>
-  <path d="M91 36 q6 -5 14 -5 l16 6 q3 1 2 4 l-3 3 -12 2 q-4 5 -11 3 q-8 -2 -8 -7 q0 -4 2 -6 z" fill="#b5342a"/>
-  <path d="M104 44 l14 2 -3 5 -12 -3 z" fill="#8a2318"/>
-  <path d="M117 39 l5 1 -2 3 z" fill="#5c150a"/>
-  <circle cx="101" cy="38" r="2.6" fill="#ffd25e"/>
+  <path d="M91 36 q6 -5 14 -5 l16 6 q3 1 2 4 l-3 3 -12 2 q-4 5 -11 3 q-8 -2 -8 -7 q0 -4 2 -6 z" fill="#332a38"/>
+  <path d="M104 44 l14 2 -3 5 -12 -3 z" fill="#191218"/>
+  <path d="M117 39 l5 1 -2 3 z" fill="#0e0910"/>
+  <circle cx="101" cy="38" r="2.6" fill="#ff9a2b"/>
   <circle cx="101.8" cy="37.6" r="1.2" fill="#1a0c08"/>
   <!-- horns swept back -->
-  <path d="M95 33 q-6 -10 -13 -13 q10 0 16 8 z" fill="#e8d9a0"/>
-  <path d="M100 32 q-2 -12 -7 -17 q9 3 12 13 z" fill="#e8d9a0"/>
+  <path d="M95 33 q-6 -10 -13 -13 q10 0 16 8 z" fill="#d8c9a8"/>
+  <path d="M100 32 q-2 -12 -7 -17 q9 3 12 13 z" fill="#d8c9a8"/>
   <!-- neck spikes -->
-  <path d="M90 48 l-7 -2 5 6 z M87 56 l-7 -1 5 5 z" fill="#e8d9a0" opacity=".9"/>
+  <path d="M90 48 l-7 -2 5 6 z M87 56 l-7 -1 5 5 z" fill="#d8c9a8" opacity=".9"/>
   <!-- saddle + rider -->
   <path d="M50 60 q12 -6 24 0 l-2 8 q-10 -4 -20 0 z" fill="#5c3a1e"/>
   <path d="M49 62 q-4 6 0 10 M75 60 q4 6 1 10" stroke="#3d2712" stroke-width="3" fill="none"/>
@@ -48,5 +48,5 @@
   <circle cx="64" cy="40" r="6" fill="#e8c49a"/>
   <path d="M58 38 q6 -8 12 0 q-6 -3 -12 0 z" fill="#4a3020"/>
   <!-- front leg tucked -->
-  <path d="M74 86 q0 9 8 10 q7 0 7 -6 q-8 0 -15 -4 z" fill="#7a1f14"/>
+  <path d="M74 86 q0 9 8 10 q7 0 7 -6 q-8 0 -15 -4 z" fill="#221a26"/>
 </svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#cfe4f0"/>
+  <rect y="560" width="1600" height="340" fill="#e8f2f8"/>
+  <path d="M400 560 l80 -220 l80 220 z" fill="#b8d4e4"/><path d="M980 560 l100 -260 l100 260 z" fill="#b8d4e4"/>
+  <text x="800" y="120" fill="#ffffff" opacity="0.85" font-family="Georgia" font-size="64" text-anchor="middle">Winterspring</text>
+  <text x="800" y="190" fill="#ffffff" opacity="0.6" font-family="Georgia" font-size="34" text-anchor="middle">placeholder screenshot — replace with a real in-game capture</text>
+</svg>

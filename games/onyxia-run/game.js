@@ -254,7 +254,11 @@ function drawPlayer(ctx) {
   const frameIdx = Math.floor(animTime * 1000 / cfg.frameMs) % Math.max(1, sprites.frames.length);
   const img = sprites.frames[frameIdx];
   if (img) {
+    // warm rim glow so the dark drake stays readable on dark backgrounds
+    ctx.shadowColor = 'rgba(255, 154, 43, 0.75)';
+    ctx.shadowBlur = 16;
     ctx.drawImage(img, -drawR, -drawR, drawR * 2, drawR * 2);
+    ctx.shadowBlur = 0;
   } else {
     ctx.fillStyle = '#8a3fb5';
     ctx.beginPath();

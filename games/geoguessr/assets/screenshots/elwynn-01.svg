@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#7fb2d9"/>
+  <rect y="560" width="1600" height="340" fill="#3f6d2c"/>
+  <path d="M300 560 l60 -160 l60 160 z" fill="#2c5220"/><path d="M1150 560 l70 -190 l70 190 z" fill="#2c5220"/>
+  <text x="800" y="120" fill="#ffffff" opacity="0.85" font-family="Georgia" font-size="64" text-anchor="middle">Elwynn Forest</text>
+  <text x="800" y="190" fill="#ffffff" opacity="0.6" font-family="Georgia" font-size="34" text-anchor="middle">placeholder screenshot — replace with a real in-game capture</text>
+</svg>

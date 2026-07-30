@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#d9a06a"/>
+  <rect y="560" width="1600" height="340" fill="#a3542b"/>
+  <ellipse cx="1200" cy="500" rx="180" ry="60" fill="#8a3f1d"/><path d="M350 560 l50 -120 l50 120 z" fill="#7a3517"/>
+  <text x="800" y="120" fill="#ffffff" opacity="0.85" font-family="Georgia" font-size="64" text-anchor="middle">Durotar</text>
+  <text x="800" y="190" fill="#ffffff" opacity="0.6" font-family="Georgia" font-size="34" text-anchor="middle">placeholder screenshot — replace with a real in-game capture</text>
+</svg>
