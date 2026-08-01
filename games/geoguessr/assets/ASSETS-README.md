@@ -38,6 +38,14 @@ Uncalibrated screenshots (with `map: null`) are skipped by the game, so it's
 safe to add several and calibrate later. The game needs at least 5 calibrated
 locations to run.
 
+## 360° panoramas (optional, GeoGuessr-style look-around)
+
+If you capture a full 360° panorama (equirectangular format — a single image
+twice as wide as tall, like `4096x2048`), add `"pano": true` to that location
+in `manifest.json`. The game then shows it in a look-around viewer (drag to
+turn, scroll to zoom) instead of the flat photo viewer. Regular screenshots
+need no flag.
+
 ## Replace the world map
 
 1. Save your map image as `map\azeroth-map.png` (or any name).
