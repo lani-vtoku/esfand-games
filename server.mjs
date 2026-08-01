@@ -89,5 +89,6 @@ server.listen(PORT, () => {
   console.log(`  hub:        http://localhost:${PORT}/`);
   console.log(`  onyxia:     http://localhost:${PORT}/games/onyxia-run/`);
   console.log(`  geoguessr:  http://localhost:${PORT}/games/geoguessr/`);
+  console.log(`  deathroll:  http://localhost:${PORT}/games/deathroll/`);
   console.log(`  calibrate:  http://localhost:${PORT}/games/geoguessr/calibrate.html`);
 });

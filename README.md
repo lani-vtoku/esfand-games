@@ -9,6 +9,7 @@ runtime, no build step, no dependencies — just Node (preinstalled) and Edge.
 |---|---|---|
 | Onyxia Run (Flappy Bird re-skin, all-night leaderboard) | `http://localhost:8080/games/onyxia-run/` | `kiosk-onyxia.bat` |
 | WoW GeoGuessr (guess the zone, 5 rounds) | `http://localhost:8080/games/geoguessr/` | `kiosk-geoguessr.bat` |
+| Death Roll (2-player coin wager, roll down from 100) | `http://localhost:8080/games/deathroll/` | `kiosk-deathroll.bat` |
 
 More stations (Darkmoon Fortune, Deathroll, Trivia, Photobooth) can be added
 later: copy a folder under `games/`, add an entry to `games.json`.

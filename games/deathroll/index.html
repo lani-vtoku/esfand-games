@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Death Roll</title>
+<link rel="stylesheet" href="../../shared/css/theme.css">
+<style>
+  :root {
+    --p1: #4a90d9;   /* Alliance blue */
+    --p2: #c23b22;   /* Horde red */
+  }
+
+  /* Split faction backdrop — Stormwind vs Orgrimmar from the wallpaper pack */
+  .side {
+    position: fixed; top: 0; bottom: 0; width: 51%;
+    background-size: cover; background-position: center;
+    transition: filter .5s ease;
+    filter: brightness(.45) saturate(.6);
+  }
+  .side.active { filter: brightness(.95) saturate(1.1); }
+  #side-p1 {
+    left: 0;
+    background-image: url('../../wallpapers/nologo/no_logo/Stormwind Cropped.jpg');
+    clip-path: polygon(0 0, 100% 0, calc(100% - 6vw) 100%, 0 100%);
+  }
+  #side-p2 {
+    right: 0;
+    background-image: url('../../wallpapers/nologo/no_logo/Orgrimmar Cropped.jpg');
+    clip-path: polygon(6vw 0, 100% 0, 100% 100%, 0 100%);
+  }
+  #side-p1::after, #side-p2::after {
+    content: ''; position: absolute; inset: 0;
+  }
+  #side-p1::after { background: linear-gradient(100deg, rgba(20,50,110,.45), transparent 70%); }
+  #side-p2::after { background: linear-gradient(-100deg, rgba(120,25,10,.45), transparent 70%); }
+
+  /* Diagonal gold divider matching the clip-path seam */
+  #divider {
+    position: fixed; top: -5vh; bottom: -5vh; left: 50%; width: 6px;
+    background: linear-gradient(var(--gold-dark), var(--gold), var(--gold-dark));
+    transform: translateX(-50%) rotate(3.2deg);
+    box-shadow: 0 0 22px rgba(248,183,0,.55);
+  }
+
+  /* Player nameplates */
+  .plate {
+    position: fixed; top: 4vh; display: flex; flex-direction: column;
+    align-items: center; gap: .3rem; width: 30vw;
+    text-shadow: 0 2px 4px #000;
+    transition: opacity .4s ease, transform .4s ease;
+    opacity: .45;
+  }
+  .plate.active { opacity: 1; transform: scale(1.08); }
+  #plate-p1 { left: 8vw; } #plate-p2 { right: 8vw; }
+  .plate .who { font-size: 2.4rem; font-weight: bold; letter-spacing: .06em; text-transform: uppercase; }
+  #plate-p1 .who { color: var(--p1); } #plate-p2 .who { color: var(--p2); }
+  .plate .ante { font-size: 1.3rem; color: var(--ink-dim); }
+  .plate .turn-tag {
+    font-size: 1.2rem; color: var(--gold); letter-spacing: .12em;
+    visibility: hidden;
+  }
+  .plate.active .turn-tag { visibility: visible; animation: attract-pulse 1.4s ease-in-out infinite; }
+
+  /* Pot banner */
+  #pot {
+    position: fixed; top: 3vh; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: .8rem;
+    padding: .6rem 1.6rem; font-size: 1.9rem;
+    background: var(--panel); border: 3px solid var(--gold-dark); border-radius: 999px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.6);
+    z-index: 5;
+  }
+  .coin {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffe9a0, var(--gold) 55%, var(--gold-dark));
+    border: 2px solid #6b5200; box-shadow: 0 2px 6px rgba(0,0,0,.5);
+    display: inline-block; flex: none;
+  }
+  #pot b { color: var(--gold); font-variant-numeric: tabular-nums; }
+
+  /* Center medallion with the current roll number */
+  #medallion {
+    position: fixed; left: 50%; top: 44%; transform: translate(-50%, -50%);
+    width: min(38vh, 34vw); aspect-ratio: 1; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 32%, #2f2417, var(--panel) 65%, #120d08);
+    border: 5px solid var(--gold-dark);
+    outline: 3px solid #3a2c12; outline-offset: 6px;
+    box-shadow: 0 0 60px rgba(0,0,0,.8), inset 0 0 40px rgba(0,0,0,.6);
+  }
+  #roll-num {
+    font-family: 'EsfandTitle', Georgia, serif;
+    font-size: clamp(4rem, 16vh, 9rem); line-height: 1;
+    color: var(--gold); text-shadow: 0 3px 0 #000, 0 0 30px rgba(248,183,0,.4);
+    font-variant-numeric: tabular-nums;
+  }
+  #roll-num.doom { color: var(--red); text-shadow: 0 3px 0 #000, 0 0 40px rgba(194,59,34,.8); }
+  #roll-range { font-size: 1.3rem; color: var(--ink-dim); margin-top: .4rem; }
+  #medallion.shake { animation: shake .5s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translate(-50%, -50%); }
+    20% { transform: translate(calc(-50% - 14px), -50%) rotate(-2deg); }
+    40% { transform: translate(calc(-50% + 12px), -50%) rotate(2deg); }
+    60% { transform: translate(calc(-50% - 8px), -50%); }
+    80% { transform: translate(calc(-50% + 6px), -50%); }
+  }
+
+  /* Roll history chips */
+  #history {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    top: calc(44% + min(20vh, 18vw) + 2vh);
+    display: flex; gap: .6rem; font-size: 1.25rem;
+    max-width: 90vw; justify-content: center;
+  }
+  .chip {
+    padding: .3rem .9rem; border-radius: 999px; background: rgba(0,0,0,.55);
+    border: 2px solid var(--ink-dim); font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .chip.p1 { border-color: var(--p1); color: #bcd8f5; }
+  .chip.p2 { border-color: var(--p2); color: #f5c2b8; }
+
+  /* Roll button */
+  #btn-roll {
+    position: fixed; left: 50%; bottom: 6vh; transform: translateX(-50%);
+    min-width: 380px; z-index: 5;
+  }
+  #btn-roll.p1 { border-color: var(--p1); box-shadow: 0 3px 0 #1d3a5c, 0 0 34px rgba(74,144,217,.5); }
+  #btn-roll.p2 { border-color: var(--p2); box-shadow: 0 3px 0 #5c150a, 0 0 34px rgba(194,59,34,.5); }
+  #btn-roll:disabled { opacity: .5; cursor: default; }
+
+  /* Red flash on the fatal 1 */
+  #death-flash {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none;
+    background: radial-gradient(circle, rgba(194,59,34,.55), rgba(90,10,0,.85));
+    opacity: 0; transition: opacity .18s ease;
+  }
+  #death-flash.on { opacity: 1; }
+
+  /* Wager stepper */
+  #bid .panel { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; padding: 2.5rem 3.5rem; }
+  #bid-row { display: flex; align-items: center; gap: 1.4rem; }
+  #bid-amount {
+    font-size: 4rem; color: var(--gold); min-width: 220px; text-align: center;
+    font-variant-numeric: tabular-nums; font-family: 'EsfandTitle', Georgia, serif;
+  }
+  #bid-presets { display: flex; gap: .8rem; }
+  #bid-presets .btn { min-height: 56px; font-size: 1.1rem; padding: 0 1.2rem; }
+  #bid-pot { font-size: 1.5rem; color: var(--ink-dim); }
+  #bid-pot b { color: var(--gold); }
+
+  /* Result overlay */
+  #result-winner { font-size: clamp(3rem, 7vw, 5rem); }
+  #result-pot { display: flex; align-items: center; gap: .8rem; font-size: 2.4rem; }
+  #result-pot b { color: var(--gold); font-variant-numeric: tabular-nums; }
+  #result-loser { font-size: 1.6rem; color: var(--ink-dim); }
+  .skull { font-size: 5rem; line-height: 1; filter: drop-shadow(0 0 18px rgba(194,59,34,.8)); }
+
+  /* Falling coin shower on the win screen */
+  .rain-coin {
+    position: fixed; top: -50px; z-index: 55; pointer-events: none;
+    animation: coin-fall linear both;
+  }
+  @keyframes coin-fall {
+    from { transform: translateY(0) rotate(0); opacity: 1; }
+    to { transform: translateY(110vh) rotate(720deg); opacity: .7; }
+  }
+
+  .idle-warn {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    z-index: 90; font-size: 1.6rem; color: #ffd9d0; text-shadow: 0 2px 4px #000;
+  }
+</style>
+</head>
+<body>
+  <div id="side-p1" class="side"></div>
+  <div id="side-p2" class="side"></div>
+  <div id="divider"></div>
+
+  <div id="plate-p1" class="plate">
+    <div class="who">Player 1</div>
+    <div class="ante"></div>
+    <div class="turn-tag">— YOUR ROLL —</div>
+  </div>
+  <div id="plate-p2" class="plate">
+    <div class="who">Player 2</div>
+    <div class="ante"></div>
+    <div class="turn-tag">— YOUR ROLL —</div>
+  </div>
+
+  <div id="pot" class="hidden"><span class="coin"></span> POT <b id="pot-amount"></b></div>
+
+  <div id="medallion">
+    <div id="roll-num">100</div>
+    <div id="roll-range"></div>
+  </div>
+  <div id="history"></div>
+
+  <button id="btn-roll" class="btn btn-huge hidden">Roll!</button>
+
+  <div id="death-flash"></div>
+
+  <div id="attract" class="overlay">
+    <h1 class="wow-title" style="font-size:clamp(3rem,8vw,6rem)">Death Roll</h1>
+    <p style="font-size:1.6rem;max-width:680px;text-align:center">
+      Two players ante up. Take turns rolling down from 100 —
+      whoever rolls the <b style="color:var(--red)">1</b> loses the pot.
+    </p>
+    <button id="btn-start" class="btn btn-huge attract-pulse">Touch to Play</button>
+  </div>
+
+  <div id="bid" class="overlay hidden">
+    <div class="panel">
+      <h2 class="wow-title" style="font-size:2.4rem">Set the Wager</h2>
+      <p style="color:var(--ink-dim);font-size:1.3rem">Coins each player puts in</p>
+      <div id="bid-row">
+        <button id="bid-minus" class="btn">−</button>
+        <div id="bid-amount">100</div>
+        <button id="bid-plus" class="btn">+</button>
+      </div>
+      <div id="bid-presets"></div>
+      <div id="bid-pot"></div>
+      <button id="btn-begin" class="btn btn-huge">Ante Up</button>
+    </div>
+  </div>
+
+  <div id="result" class="overlay hidden">
+    <div class="skull">☠</div>
+    <div id="result-winner" class="wow-title"></div>
+    <div id="result-pot"><span class="coin"></span> Wins <b></b></div>
+    <div id="result-loser"></div>
+    <div style="display:flex;gap:1.2rem;margin-top:1rem">
+      <button id="btn-rematch" class="btn btn-huge">Rematch</button>
+      <button id="btn-new-wager" class="btn btn-ghost">Change Wager</button>
+    </div>
+  </div>
+
+  <div id="idle-warn" class="idle-warn hidden"></div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
