@@ -2,7 +2,7 @@
 // the table runner enters the wager (min 100 each), then players alternate
 // hitting ROLL until someone hits the 1.
 
-import { createGame, roll, clampAnte } from './deathroll.js';
+import { createGame, roll, maxRoll, clampAnte } from './deathroll.js';
 import { guardInputs, fullscreenOnFirstInteraction, watchIdle, adminGesture, buildAdminOverlay } from '../../shared/js/kiosk.js';
 
 const $ = id => document.getElementById(id);
@@ -98,7 +98,7 @@ function renderTurn() {
   rollBtn.classList.toggle('p1', p === 1);
   rollBtn.classList.toggle('p2', p === 2);
   rollNumEl.textContent = game.ceiling;
-  rollRangeEl.textContent = `rolling 1 – ${game.ceiling}`;
+  rollRangeEl.textContent = `rolling 1 – ${maxRoll(game)}`;
 }
 
 function renderHistory() {
@@ -111,7 +111,7 @@ rollBtn.addEventListener('click', async () => {
   rolling = true;
   rollBtn.disabled = true;
 
-  const before = game.ceiling;
+  const before = maxRoll(game);
   game = roll(game);
   const landed = game.ceiling;
 

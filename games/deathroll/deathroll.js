@@ -23,13 +23,22 @@ export function createGame({ ante = 100, startRoll = ante } = {}) {
 }
 
 /**
+ * Highest number the next roll can land on. The opening roll can hit the full
+ * wager; every roll after that must land BELOW the previous roll so the
+ * counter always runs down and the game can't stall (no endless 2 → 2 → 2).
+ */
+export function maxRoll(state) {
+  return state.history.length === 0 ? state.ceiling : Math.max(1, state.ceiling - 1);
+}
+
+/**
  * Roll for the current player. Returns a new state; never mutates.
  * @param {ReturnType<createGame>} state
  * @param {() => number} [rand] 0..1, injectable for tests
  */
 export function roll(state, rand = Math.random) {
   if (state.over) return state;
-  const value = 1 + Math.floor(rand() * state.ceiling);
+  const value = 1 + Math.floor(rand() * maxRoll(state));
   const player = state.turn;
   const next = {
     ...state,
