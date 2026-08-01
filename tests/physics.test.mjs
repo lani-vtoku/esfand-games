@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   WORLD, PHYS, initialPlayer, stepPlayer, flap, tiltDeg, circleRectHit, checkDeath,
 } from '../games/onyxia-run/physics.js';
-import { rampAt, nextGapY, ObstacleField, RAMP_CAP, GAP_MARGIN, MAX_GAP_JUMP } from '../games/onyxia-run/obstacles.js';
+import { rampAt, nextGapY, ObstacleField, RAMP_CAP, SPEED_CAP, GAP_MARGIN, MAX_GAP_JUMP } from '../games/onyxia-run/obstacles.js';
 
 test('flap sets upward velocity', () => {
   const p = initialPlayer();
@@ -56,13 +56,24 @@ test('pillar collision kills, flying through the gap does not', () => {
 test('difficulty ramp lerps and caps', () => {
   const start = rampAt(0);
   const mid = rampAt(RAMP_CAP / 2);
-  const max = rampAt(RAMP_CAP);
+  const phase1End = rampAt(RAMP_CAP);
   assert.equal(start.speed, 260);
-  assert.equal(max.speed, 420);
+  assert.equal(phase1End.speed, 420);
   assert.equal(start.gapH, 260);
+  assert.equal(phase1End.gapH, 190);
+  assert.ok(mid.speed > start.speed && mid.speed < phase1End.speed);
+});
+
+test('speed keeps climbing past RAMP_CAP but the gap holds at minimum', () => {
+  const phase1End = rampAt(RAMP_CAP);
+  const phase2Mid = rampAt((RAMP_CAP + SPEED_CAP) / 2);
+  const max = rampAt(SPEED_CAP);
+  assert.ok(phase2Mid.speed > phase1End.speed && phase2Mid.speed < max.speed);
+  assert.equal(max.speed, 560);
+  assert.equal(phase2Mid.gapH, 190);        // gap never shrinks past phase 1 min
   assert.equal(max.gapH, 190);
-  assert.ok(mid.speed > start.speed && mid.speed < max.speed);
-  assert.deepEqual(rampAt(RAMP_CAP * 10), max); // capped
+  assert.ok(phase2Mid.spawnInterval < phase1End.spawnInterval); // spacing stays fair as speed rises
+  assert.deepEqual(rampAt(SPEED_CAP * 10), max); // capped
 });
 
 test('nextGapY stays within band and jump limit', () => {

@@ -3,21 +3,26 @@
 
 import { WORLD, clamp01 } from './physics.js';
 
-export const RAMP_CAP = 40; // pillars-passed count at which difficulty maxes out
+export const RAMP_CAP = 40;   // pillars-passed count at which the gap stops shrinking
+export const SPEED_CAP = 100; // pillars-passed count at which scroll speed stops climbing
 
 /**
  * Difficulty parameters as a function of pillars passed.
- * All values lerp from start to end, capped at RAMP_CAP.
+ * Phase 1 (0..RAMP_CAP): everything ramps — speed up, gap shrinks, spawns tighten.
+ * Phase 2 (RAMP_CAP..SPEED_CAP): the gap holds at minimum but speed keeps
+ * climbing, with spawnInterval shrinking in step so pillar spacing stays
+ * roughly constant — less reaction time, not more room.
  * @param {number} n pillars passed
  * @returns {{speed:number, gapH:number, spawnInterval:number}}
  */
 export function rampAt(n) {
   const t = clamp01(n / RAMP_CAP);
-  const lerp = (a, b) => a + (b - a) * t;
+  const t2 = clamp01((n - RAMP_CAP) / (SPEED_CAP - RAMP_CAP));
+  const lerp = (a, b, u) => a + (b - a) * u;
   return {
-    speed: lerp(260, 420),          // px/s scroll speed
-    gapH: lerp(260, 190),           // gap height px
-    spawnInterval: lerp(1.9, 1.35), // seconds between pillars
+    speed: t2 > 0 ? lerp(420, 560, t2) : lerp(260, 420, t),           // px/s scroll speed
+    gapH: lerp(260, 190, t),                                          // gap height px
+    spawnInterval: t2 > 0 ? lerp(1.35, 1.01, t2) : lerp(1.9, 1.35, t), // seconds between pillars
   };
 }
 

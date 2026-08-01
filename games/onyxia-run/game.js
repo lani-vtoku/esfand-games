@@ -56,6 +56,37 @@ let stateTime = 0;      // seconds in current state
 let scrollX = 0;        // world scroll for parallax
 let deathLine = '';
 
+// Scenery stages: the Steppes darken and burn as the run goes deeper.
+// Each stage is a top/bottom gradient tint [r,g,b,a] laid over the background,
+// crossfaded smoothly so the shift reads as weather turning, not a hard cut.
+const SCENERY_STAGES = [
+  { at: 0,  top: [0, 0, 0, 0],         bottom: [0, 0, 0, 0] },          // clear skies
+  { at: 10, top: [255, 120, 40, 0.16], bottom: [130, 30, 60, 0.22] },   // smoldering dusk
+  { at: 20, top: [170, 25, 15, 0.30],  bottom: [70, 0, 35, 0.38] },     // firestorm
+  { at: 30, top: [45, 0, 70, 0.44],    bottom: [10, 0, 25, 0.52] },     // the lair's shadow
+];
+const sceneryTint = { top: [0, 0, 0, 0], bottom: [0, 0, 0, 0] };
+
+function sceneryTargetFor(n) {
+  let s = SCENERY_STAGES[0];
+  for (const st of SCENERY_STAGES) if (n >= st.at) s = st;
+  return s;
+}
+
+function lerpTint(cur, tgt, k) {
+  for (let i = 0; i < 4; i++) cur[i] += (tgt[i] - cur[i]) * k;
+}
+
+// Embers drift up through the later stages; fixed set so motion is stable.
+const EMBERS = Array.from({ length: 36 }, () => ({
+  x: Math.random() * WORLD.width,
+  y: Math.random() * WORLD.height,
+  drift: 30 + Math.random() * 60,   // px/s leftward
+  rise: 20 + Math.random() * 45,    // px/s upward
+  r: 1.5 + Math.random() * 2.5,
+  phase: Math.random() * Math.PI * 2,
+}));
+
 // "DEEP BREATH" beat: every 10th pillar, warning then a flame band up top.
 const BREATH = { BAND_H: 240, WARN: 0.9, FLAME: 1.3 };
 let breathTimer = 0;    // counts down through WARN + FLAME
@@ -120,6 +151,12 @@ document.addEventListener('keydown', e => {
 function update(dt) {
   animTime += dt;
   stateTime += dt;
+
+  // Ease the scenery toward the current stage (~2.5s crossfade).
+  const tintTarget = sceneryTargetFor(state === S.PLAY || state === S.DEAD ? score : 0);
+  const tintK = Math.min(1, dt / 2.5);
+  lerpTint(sceneryTint.top, tintTarget.top, tintK);
+  lerpTint(sceneryTint.bottom, tintTarget.bottom, tintK);
 
   if (state === S.READY) {
     // bob gently while waiting
@@ -209,6 +246,31 @@ function drawBackground(ctx) {
   for (const layer of sprites.bgLayers) {
     if (!layer.img) continue;
     drawMirrorTiled(ctx, layer.img, scrollX * layer.speedFactor, WORLD.width, 0, WORLD.height);
+  }
+
+  // Stage tint over the background, under pillars/player so they stay readable.
+  const [tr, tg, tb, ta] = sceneryTint.top;
+  const [br, bg, bb, ba] = sceneryTint.bottom;
+  if (ta > 0.01 || ba > 0.01) {
+    const grad = ctx.createLinearGradient(0, 0, 0, WORLD.height);
+    grad.addColorStop(0, `rgba(${tr | 0}, ${tg | 0}, ${tb | 0}, ${ta})`);
+    grad.addColorStop(1, `rgba(${br | 0}, ${bg | 0}, ${bb | 0}, ${ba})`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+  }
+
+  // Embers fade in with the tint from stage 2 (score 20) onward.
+  const emberAlpha = Math.max(0, (ta - SCENERY_STAGES[1].top[3]) / 0.15);
+  if (emberAlpha > 0.02) {
+    for (const e of EMBERS) {
+      const x = ((e.x - animTime * e.drift) % WORLD.width + WORLD.width) % WORLD.width;
+      const y = ((e.y - animTime * e.rise) % WORLD.height + WORLD.height) % WORLD.height;
+      const flicker = 0.5 + 0.5 * Math.sin(animTime * 6 + e.phase);
+      ctx.fillStyle = `rgba(255, 170, 70, ${Math.min(1, emberAlpha) * (0.35 + 0.45 * flicker)})`;
+      ctx.beginPath();
+      ctx.arc(x + Math.sin(animTime * 2 + e.phase) * 10, y, e.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 
