@@ -1,9 +1,10 @@
 // Calibration page: assign map coordinates to screenshots by clicking the map,
 // then download an updated manifest.json. Zero coding for organizers.
+// The map zooms (wheel/pinch/buttons) for precise placement.
 
 import { MapWidget } from './map.js';
 import { fullPointsRadius } from './scoring.js';
-import { loadManifest } from '../../shared/js/manifest.js';
+import { loadManifest, bust } from '../../shared/js/manifest.js';
 import { downloadJson } from '../../shared/js/kiosk.js';
 
 const manifest = await loadManifest('assets/manifest.json');
@@ -12,37 +13,19 @@ const locations = manifest.locations ?? [];
 const map = new MapWidget(document.getElementById('map-holder'), manifest.map);
 map.interactive = true;
 
-// crosshair + full-points ring instead of the game's pin
-const cross = document.createElement('div');
-cross.className = 'mapw-cross';
-cross.style.display = 'none';
-const ring = document.createElement('div');
-ring.className = 'mapw-ring';
-ring.style.display = 'none';
-map.layer.append(cross, ring);
-
 const rFull = fullPointsRadius(manifest.map.width, manifest.map.height,
   manifest.game?.fullPointsRadiusPct ?? 3);
 
 let selected = null;
 
 function placeMarker(pt) {
-  const vb = map._viewBox();
-  cross.style.display = '';
-  cross.style.left = vb.x + pt.x * vb.scale + 'px';
-  cross.style.top = vb.y + pt.y * vb.scale + 'px';
-  const d = rFull * 2 * vb.scale;
-  ring.style.display = '';
-  ring.style.left = vb.x + pt.x * vb.scale + 'px';
-  ring.style.top = vb.y + pt.y * vb.scale + 'px';
-  ring.style.width = d + 'px';
-  ring.style.height = d + 'px';
+  map.setGuess(pt);
+  map.setRing(pt, rFull);
 }
 
 map.onGuessMoved = pt => {
   if (!selected) return;
   selected.map = { x: Math.round(pt.x), y: Math.round(pt.y) };
-  if (map.guessPin) map.guessPin.style.display = 'none'; // crosshair instead
   placeMarker(selected.map);
   renderList();
   renderInfo();
@@ -89,15 +72,13 @@ function renderInfo() {
 function select(loc) {
   selected = loc;
   const img = document.getElementById('ref-img');
-  img.src = 'assets/' + loc.image;
+  img.src = bust('assets/' + loc.image);
   img.style.display = '';
   if (loc.map) placeMarker(loc.map);
-  else { cross.style.display = 'none'; ring.style.display = 'none'; }
+  else { map.reset(); map.hideRing(); }
   renderList();
   renderInfo();
 }
-
-window.addEventListener('resize', () => { if (selected?.map) placeMarker(selected.map); });
 
 document.getElementById('btn-download').addEventListener('click', () => {
   downloadJson(manifest, 'manifest.json');

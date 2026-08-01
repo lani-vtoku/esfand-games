@@ -6,9 +6,10 @@
   },
   "game": {
     "roundsPerGame": 5,
-    "pointsPerRound": 1000,
+    "pointsPerRound": 5000,
     "fullPointsRadiusPct": 3,
-    "decayPct": 12
+    "decayPct": 12,
+    "roundSeconds": 60
   },
   "locations": [
     {

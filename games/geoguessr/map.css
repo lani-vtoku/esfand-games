@@ -1,16 +1,22 @@
-/* Map widget styles — used by the game and the calibrate page */
+/* Map widget styles — zoomable map used by the game and the calibrate page */
 
-.mapw { position: relative; overflow: hidden; }
-.mapw-img {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; pointer-events: none;
+.mapw { position: relative; overflow: hidden; touch-action: none; }
+.mapw-stage {
+  position: absolute; left: 0; top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
 }
+.mapw-img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.mapw-svg { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .mapw-layer { position: absolute; inset: 0; pointer-events: none; }
+
+/* anchor wrapper: positioned at the natural coordinate, counter-scaled so
+   pins keep constant screen size at any zoom */
+.mapw-anchor { position: absolute; width: 0; height: 0; }
 
 .mapw-pin {
   position: absolute; width: 34px; height: 34px;
-  margin-left: -17px; margin-top: -34px;
-  pointer-events: none;
+  left: -17px; top: -34px;
 }
 .mapw-pin::before {
   content: ''; position: absolute; inset: 0;
@@ -25,24 +31,26 @@
 }
 
 .mapw-line {
-  position: absolute; height: 4px; margin-top: -2px;
-  background: repeating-linear-gradient(90deg, #fff 0 12px, transparent 12px 22px);
-  transform-origin: 0 50%;
-  transition: width .7s ease-out;
+  stroke: #fff; stroke-width: 4; stroke-dasharray: 12 10;
+  vector-effect: non-scaling-stroke;
   opacity: .9;
+  animation: line-dash 1.2s linear infinite;
+}
+@keyframes line-dash { to { stroke-dashoffset: -44; } }
+
+.mapw-ring {
+  fill: none; stroke: rgba(248, 183, 0, .85); stroke-width: 2;
+  stroke-dasharray: 8 6; vector-effect: non-scaling-stroke;
 }
 
-/* Calibrate crosshair + score ring */
-.mapw-cross {
-  position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px;
-  pointer-events: none;
+.mapw-zoombtns {
+  position: absolute; left: 10px; bottom: 10px; z-index: 5;
+  display: flex; flex-direction: column; gap: 6px;
 }
-.mapw-cross::before, .mapw-cross::after {
-  content: ''; position: absolute; background: #ff4d6a;
+.mapw-zoombtns button {
+  width: 52px; height: 52px; font-size: 1.5rem; font-family: inherit;
+  color: var(--ink); background: rgba(29, 22, 16, .92);
+  border: 2px solid var(--gold-dark); border-radius: 8px; cursor: pointer;
+  touch-action: manipulation;
 }
-.mapw-cross::before { left: 50%; top: 0; width: 2px; height: 100%; margin-left: -1px; }
-.mapw-cross::after { top: 50%; left: 0; height: 2px; width: 100%; margin-top: -1px; }
-.mapw-ring {
-  position: absolute; border: 2px dashed rgba(248, 183, 0, .8); border-radius: 50%;
-  pointer-events: none; transform: translate(-50%, -50%);
-}
+.mapw-zoombtns button:active { background: var(--panel-light); }

@@ -7,50 +7,71 @@
 <link rel="stylesheet" href="../../shared/css/theme.css">
 <link rel="stylesheet" href="map.css">
 <style>
-  #screenshot {
-    position: fixed; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; background: #000;
+  /* --- location viewers (photo pan/zoom + 360 pano) --- */
+  #photo { position: fixed; inset: 0; overflow: hidden; background: #000; touch-action: none; cursor: grab; }
+  #photo:active { cursor: grabbing; }
+  .photoview-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+  #pano { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; display: none; }
+  #look-hint {
+    position: fixed; top: 84px; left: 50%; transform: translateX(-50%);
+    padding: .5rem 1.2rem; border-radius: 999px; background: rgba(0,0,0,.55);
+    font-size: 1.05rem; color: var(--ink); pointer-events: none;
+    transition: opacity .6s; z-index: 10;
   }
+
+  /* --- top bar: round / timer / score --- */
   #topbar {
-    position: fixed; top: 0; left: 0; right: 0;
-    display: flex; justify-content: center; gap: 3rem;
-    padding: .8rem; font-size: 1.6rem;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; justify-content: center; align-items: center; gap: 3rem;
+    padding: .7rem; font-size: 1.5rem;
     background: linear-gradient(rgba(0,0,0,.75), transparent);
     text-shadow: 0 2px 4px #000;
     pointer-events: none;
   }
-  /* Corner thumbnail that invites expanding the map */
-  #map-thumb {
-    position: fixed; right: 24px; bottom: 24px; width: 300px; height: 225px;
-    border: 3px solid var(--gold); border-radius: 12px; overflow: hidden;
-    cursor: pointer; background: #0a2231;
-    box-shadow: 0 8px 30px rgba(0,0,0,.7);
-    transition: transform .15s ease;
+  #timer-wrap {
+    position: fixed; top: 0; left: 0; right: 0; height: 6px; z-index: 21;
+    background: rgba(0,0,0,.5); display: none;
   }
-  #map-thumb:hover { transform: scale(1.05); }
-  #map-thumb img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-  #map-thumb .hint {
-    position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
-    padding: .4rem; background: rgba(0,0,0,.65); font-size: 1.1rem; color: var(--gold);
+  #timer-bar { height: 100%; width: 100%; background: var(--gold); transition: width .25s linear; }
+  #timer-bar.low { background: var(--red); }
+
+  /* --- map inset (GeoGuessr style, bottom-right, expands) --- */
+  #map-inset {
+    position: fixed; right: 18px; bottom: 18px; z-index: 30;
+    width: 300px; height: 240px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: width .25s ease, height .25s ease;
   }
-  /* Expanded map panel */
-  #map-panel {
-    position: fixed; inset: 0; z-index: 40;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(5, 8, 12, .88);
-  }
+  #map-inset.expanded { width: min(72vw, 1100px); height: min(74vh, 860px); }
   #map-holder {
-    width: min(74vw, 132vh); height: min(55.5vw, 74vh);
+    flex: 1; min-height: 0;
     border: 3px solid var(--gold); border-radius: 12px; background: #0a2231;
+    box-shadow: 0 8px 30px rgba(0,0,0,.7);
+    overflow: hidden;
   }
-  #map-actions { display: flex; gap: 1.2rem; margin-top: 1.2rem; align-items: center; }
+  #map-inset:not(.expanded) #map-holder { cursor: pointer; }
+  #map-inset:not(.expanded) .mapw-zoombtns { display: none; }
+  #inset-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+  #map-inset:not(.expanded) #inset-buttons .btn { min-height: 52px; font-size: 1.05rem; padding: 0 1rem; }
+  #btn-lock[disabled] { opacity: .45; }
+  #expand-hint {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; text-align: center;
+    padding: .35rem; background: rgba(0,0,0,.65); font-size: 1rem; color: var(--gold);
+    pointer-events: none;
+  }
+
+  /* --- reveal banner --- */
   #reveal-banner {
-    display: flex; flex-direction: column; align-items: center; gap: .3rem;
-    margin-bottom: 1rem; text-align: center;
+    position: fixed; top: 54px; left: 50%; transform: translateX(-50%);
+    z-index: 25; text-align: center; pointer-events: none;
+    display: flex; flex-direction: column; gap: .2rem;
+    background: rgba(8, 6, 3, .82); padding: .8rem 2.2rem; border-radius: 14px;
+    border: 2px solid var(--gold-dark);
   }
-  #reveal-zone { font-size: 3rem; }
-  #reveal-detail { font-size: 1.5rem; color: var(--ink-dim); }
-  #reveal-points { font-size: 2.6rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+  #reveal-zone { font-size: 2.4rem; }
+  #reveal-detail { font-size: 1.3rem; color: var(--ink-dim); }
+  #reveal-points { font-size: 2rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+
   .idle-warn {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
     z-index: 90; font-size: 1.6rem; color: #ffd9d0; text-shadow: 0 2px 4px #000;
@@ -58,35 +79,35 @@
 </style>
 </head>
 <body>
-  <img id="screenshot" alt="">
+  <div id="photo"></div>
+  <canvas id="pano"></canvas>
+  <div id="look-hint">Drag to look around · scroll to zoom</div>
+
+  <div id="timer-wrap"><div id="timer-bar"></div></div>
   <div id="topbar">
     <span id="round-label"></span>
     <span id="score-label"></span>
   </div>
 
-  <div id="map-thumb" class="hidden">
-    <img id="map-thumb-img" alt="Map">
-    <div class="hint">TAP TO GUESS</div>
+  <div id="reveal-banner" class="hidden">
+    <div id="reveal-zone" class="wow-title"></div>
+    <div id="reveal-detail"></div>
+    <div id="reveal-points"></div>
   </div>
 
-  <div id="map-panel" class="hidden">
-    <div id="reveal-banner" class="hidden">
-      <div id="reveal-zone" class="wow-title"></div>
-      <div id="reveal-detail"></div>
-      <div id="reveal-points"></div>
-    </div>
-    <div id="map-holder"></div>
-    <div id="map-actions">
-      <button id="btn-close-map" class="btn btn-ghost">Back to photo</button>
-      <button id="btn-lock" class="btn btn-huge">Lock In Guess</button>
-      <button id="btn-next" class="btn btn-huge hidden">Next</button>
+  <div id="map-inset">
+    <div id="map-holder"><div id="expand-hint">TAP TO GUESS</div></div>
+    <div id="inset-buttons">
+      <button id="btn-collapse" class="btn btn-ghost hidden">Hide map</button>
+      <button id="btn-lock" class="btn" disabled>Place your pin</button>
+      <button id="btn-next" class="btn hidden">Next</button>
     </div>
   </div>
 
   <div id="attract" class="overlay">
     <h1 class="wow-title" style="font-size:clamp(3rem,8vw,6rem)">WoW GeoGuessr</h1>
-    <p style="font-size:1.6rem;max-width:640px;text-align:center">
-      Where in Azeroth is this? 5 screenshots, 5000 points.
+    <p id="attract-sub" style="font-size:1.6rem;max-width:640px;text-align:center">
+      Where in Azeroth is this?
     </p>
     <button id="btn-start" class="btn btn-huge attract-pulse">Touch to Play</button>
   </div>
