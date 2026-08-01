@@ -1,14 +1,15 @@
 // Pure Death Roll logic — unit-testable, no DOM.
 //
-// Classic WoW death roll: both players ante up, first roll is 1–100, then each
-// player rolls 1–(previous roll) in turn. Whoever rolls the 1 loses the pot.
+// Classic WoW death roll: both players ante up, first roll is 1–(the wager),
+// then each player rolls 1–(previous roll) in turn. Whoever rolls the 1 loses
+// the pot.
 
 /**
  * @param {object} [opts]
  * @param {number} [opts.ante]      coins each player puts in
- * @param {number} [opts.startRoll] ceiling of the first roll
+ * @param {number} [opts.startRoll] ceiling of the first roll (defaults to the ante)
  */
-export function createGame({ ante = 100, startRoll = 100 } = {}) {
+export function createGame({ ante = 100, startRoll = ante } = {}) {
   return {
     ante,
     pot: ante * 2,

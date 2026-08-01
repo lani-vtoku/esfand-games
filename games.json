@@ -16,7 +16,7 @@
       "id": "deathroll",
       "name": "Death Roll",
       "path": "games/deathroll/",
-      "description": "Two players ante up and roll down from 100. Roll the 1, lose the pot."
+      "description": "Two players ante up and roll down from the wager. Roll the 1, lose the pot."
     }
   ]
 }

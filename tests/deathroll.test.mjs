@@ -2,12 +2,18 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createGame, roll, clampAnte } from '../games/deathroll/deathroll.js';
 
-test('new game: pot is double the ante, player 1 rolls first from 100', () => {
+test('new game: pot is double the ante, first roll is 1..ante', () => {
   const g = createGame({ ante: 250 });
   assert.equal(g.pot, 500);
-  assert.equal(g.ceiling, 100);
+  assert.equal(g.ceiling, 250);
   assert.equal(g.turn, 1);
   assert.equal(g.over, false);
+});
+
+test('first roll caps at the ante', () => {
+  let g = createGame({ ante: 500 });
+  g = roll(g, () => 0.999); // max roll
+  assert.equal(g.ceiling, 500);
 });
 
 test('roll stays within 1..ceiling and becomes the new ceiling', () => {

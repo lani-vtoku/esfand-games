@@ -39,7 +39,7 @@ function toAttract() {
   hide(bidEl); hide(resultEl); hide(rollBtn); hide(potEl);
   deathFlashEl.classList.remove('on');
   rollNumEl.classList.remove('doom');
-  rollNumEl.textContent = '100';
+  rollNumEl.textContent = ante.toLocaleString();
   rollRangeEl.textContent = '';
   historyEl.innerHTML = '';
   clearCoinRain();
@@ -72,7 +72,7 @@ function startMatch() {
 
 function renderBid() {
   $('bid-amount').textContent = ante.toLocaleString();
-  $('bid-pot').innerHTML = `Pot: <b>${(ante * 2).toLocaleString()} coins</b> — winner takes all`;
+  $('bid-pot').innerHTML = `Pot: <b>${(ante * 2).toLocaleString()} coins</b> — first roll 1 – ${ante.toLocaleString()}`;
   $('bid-minus').disabled = ante <= clampAnte(0);
 }
 
